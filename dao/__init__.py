@@ -2,13 +2,19 @@ import psycopg2
 
 def conectardb():
     con = psycopg2.connect(
-        host='localhost',
-        database='encontreamigos',
-        user='postgres',
-        password='12345'
+        host='dpg-cog57pev3ddc73e6e3vg-a.oregon-postgres.render.com',
+        database='encontraramigos',
+        user='encontraramigos_user',
+        password='x2bd2iia6a62XKFE5gSGtIiY0is2oBCB'
+        #host='localhost',
+        #database='encontreamigos',
+        #user='postgres',
+        #password='12345'
     )
 
     return con
+
+
 def verificarlogin(email, senha):
     conexao = conectardb()
     cur = conexao.cursor()

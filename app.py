@@ -6,6 +6,7 @@ app.secret_key = 'ASsadlkjasdAJS54$5sdSA21'
 
 @app.route('/')
 def index():
+
     return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -16,6 +17,7 @@ def verificarlogin():
         email = request.form.get('email')
         senha = request.form.get('senha')
         result = dao.verificarlogin(email, senha)
+        print(result)
         if len(result) > 0:
             session['email'] = email
             path = result[0][3]
@@ -56,6 +58,15 @@ def logout():
     res.set_cookie('email', '', max_age=0)
 
     return render_template('index.html')
+
+
+
+@app.route('/exemplo')
+def exemplo():
+    if session.get('email') != None:
+        return 'entrei no perfil de ' + session.get('email')
+    else:
+        return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
