@@ -1,8 +1,11 @@
 from flask import *
 import dao
+from os.path import join, dirname, realpath
+
 
 app = Flask(__name__)
 app.secret_key = 'ASsadlkjasdAJS54$5sdSA21'
+app.config['UPLOAD_FOLDER'] = join(dirname(realpath(__file__)), 'static/imagens/')
 
 @app.route('/')
 def index():
@@ -17,7 +20,7 @@ def verificarlogin():
         email = request.form.get('email')
         senha = request.form.get('senha')
         result = dao.verificarlogin(email, senha)
-        print(result)
+ 
         if len(result) > 0:
             session['email'] = email
             path = result[0][3]
@@ -39,7 +42,7 @@ def cadastrarUser():
         email = request.form.get('email')
         senha = request.form.get('senha')
         f = request.files['file']
-        path = 'static/imagens/' + f.filename
+        path = app.config['UPLOAD_FOLDER'] + f.filename
 
         if dao.inseriruser(email, nome, senha, path):
             f.save(path)
@@ -59,7 +62,40 @@ def logout():
 
     return render_template('index.html')
 
+@app.route('/listarpessoas', methods=['GET'])
+def listar_pessoas():
+    if session.get('email') != None:
+        result = dao.listarpessoas(0)
+        return render_template('listarpessoas.html', pessoas=result, meuemail=session.get('email'))
+    else:
+        return 'nao ok'
 
+@app.route('/listarpessoas/externo', methods=['GET'])
+def listar_pessoas_ext():
+    if session.get('email') != None:
+        result = dao.listarpessoas(1)
+        return jsonify(result).json
+    else:
+        resp = make_response('necessário fazer login')
+        resp.status_code = 511
+        return resp
+
+@app.route('/listarpessoas/externoSemlogin', methods=['GET'])
+def listar_pessoas_ext_semlogin():
+
+    result = dao.listarpessoas(1)
+    return jsonify(result).json
+
+@app.route('/curtirpessoa', methods=['GET'])
+def curtir_pessoa():
+    if session.get('email') != None:
+        email = request.values.get('user1')
+        crush = request.values.get('user2')
+        if dao.inserircurtida(email, crush):
+            return 'deu certo'
+        else:
+            return 'deu errado'
+        
 
 @app.route('/exemplo')
 def exemplo():

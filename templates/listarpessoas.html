@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <a href="/logout">Logout</a><br><br>
+    {% for email,nome,foto in pessoas %}
+        {% if email != meuemail %}
+            <p>
+                <img src="{{foto}}" alt="{{nome}}" width="90" height="130">
+                <a>{{email}}</a>
+                <a href="/curtirpessoa?user1={{meuemail}}&user2={{email}}"><img src="static/imagens/like.png" width="20" height="30"></a>
+
+            </p>
+        {% endif %}
+    <hr>
+    {% endfor %}
+    <br>
+
+
+</body>
+</html>
