@@ -5,7 +5,7 @@ from os.path import join, dirname, realpath
 
 app = Flask(__name__)
 app.secret_key = 'ASsadlkjasdAJS54$5sdSA21'
-app.config['UPLOAD_FOLDER'] = join(dirname(realpath(__file__)), 'static/imagens/')
+app.config['UPLOAD_FOLDER'] = 'static/imagens/'
 
 @app.route('/')
 def index():
