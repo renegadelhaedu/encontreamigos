@@ -16,6 +16,15 @@ def conectardb():
     return con
 
 
+def buscar_pessoa(nome):
+    conexao = conectardb()
+    cur = conexao.cursor()
+    cur.execute(f"SELECT email,nome,pathft FROM usuarios where nome= '{nome}' ")
+    recset = cur.fetchall()
+    conexao.close()
+
+    return recset
+
 def verificarlogin(email, senha):
     conexao = conectardb()
     cur = conexao.cursor()

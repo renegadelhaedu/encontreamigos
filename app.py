@@ -1,5 +1,6 @@
 from flask import *
 import dao
+import segundoplano as sp
 from os.path import join, dirname, realpath
 
 
@@ -11,6 +12,12 @@ app.config['UPLOAD_FOLDER'] = 'static/imagens/'
 def index():
 
     return render_template('index.html')
+
+@app.route('/atualizarprodutos')
+def atualizarprods():
+    sp.atualizarComThread('1')
+    return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def verificarlogin():
@@ -58,6 +65,7 @@ def logout():
     session.pop('email', None)
 
     res = make_response("Cookie Removido")
+    res.status_code = 202
     res.set_cookie('email', '', max_age=0)
 
     return render_template('index.html')
@@ -70,15 +78,28 @@ def listar_pessoas():
     else:
         return 'nao ok'
 
-@app.route('/listarpessoas/externo', methods=['GET'])
+@app.route('/buscarnome/<nome>')
+def buscar_nome(nome):
+    user = dao.buscar_pessoa(nome)
+    print(user)
+    return 'ok deu certo'
+
+@app.route('/listarpessoas/externo', methods=['GET', 'POST'])
 def listar_pessoas_ext():
-    if session.get('email') != None:
+    if(request.method == 'POST'):
+        valor = request.json
+        print(valor)
         result = dao.listarpessoas(1)
         return jsonify(result).json
     else:
-        resp = make_response('necessário fazer login')
-        resp.status_code = 511
-        return resp
+
+        if session.get('email') != None:
+            result = dao.listarpessoas(1)
+            return jsonify(result).json
+        else:
+            resp = make_response('necessário fazer login')
+            resp.status_code = 511
+            return resp
 
 @app.route('/listarpessoas/externoSemlogin', methods=['GET'])
 def listar_pessoas_ext_semlogin():
@@ -95,7 +116,13 @@ def curtir_pessoa():
             return 'deu certo'
         else:
             return 'deu errado'
-        
+
+
+@app.route('/atualizarbd')
+def atualizar_bd():
+    sp.atualizarComThread(1)
+    return render_template('index.html')
+
 
 @app.route('/exemplo')
 def exemplo():
