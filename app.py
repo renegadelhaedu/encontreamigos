@@ -65,7 +65,6 @@ def logout():
     session.pop('email', None)
 
     res = make_response("Cookie Removido")
-    res.status_code = 202
     res.set_cookie('email', '', max_age=0)
 
     return render_template('index.html')
